@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Brayden Larnard/ 272-002
  *
  *   This java file contains the problem solutions for the methods selectionSort,
  *   mergeSortDivisibleByKFirst, asteroidsDestroyed, and numRescueCanoes methods.
@@ -42,6 +42,39 @@ public class ProblemSolutions {
             // "SELECTION SORT" ALGORITHM.
             // DO NOT FORGET TO ADD YOUR NAME / SECTION ABOVE
 
+            // If ascending is true, look for the smallest value
+            if (ascending) {
+                int min = i; // Start by setting the min to the current Index
+                // Iterate through the rest of the values
+                for (int j = i + 1; j < n; j++) {
+                    // If a smaller value is found, update min
+                    if (values[j] < values[min]) {
+                        min = j;
+                    }
+                }
+                // If the min has changed, swap the values
+                if (min != i) {
+                    int temp = values[i];
+                    values[i] = values[min];
+                    values[min] = temp;
+                }
+            } else {
+            // If ascending is false, look for the largest value
+                int max = i; // start by setting the max to the current value
+                // Iterate through the rest of the values
+                for (int j = i + 1; j < n; j++) {
+                    // If a larger value is found, update min
+                    if (values[j] > values[max]) {
+                        max = j;
+                    }
+                }
+                // If the min has changed, swap the values
+                if (max != i) {
+                    int temp = values[i];
+                    values[i] = values[max];
+                    values[max] = temp;
+                }
+            }
         }
 
     } // End class selectionSort
@@ -102,6 +135,43 @@ public class ProblemSolutions {
         // TO CODE WITH A SPACE COMPLEXITY OF O(N LOG N), WHICH IS FINE FOR PURPOSES
         // OF THIS PROGRAMMING EXERCISES.
 
+        // Create a temporary array to hold merged values
+        int[] temp = new int[right - left + 1];
+
+        // Variables to track the indices of the left, right, and temp arrays
+        int i = left;
+        int j = mid + 1;
+        int l = 0;
+
+        // As long as there are elements in both subarrays
+        while (i <= mid && j <= right) {
+            // If the left element is divisible by k, add it to temp
+            if (arr[i] % k == 0) {
+                temp[l++] = arr[i++];
+            // Otherwise, if the right element is divisible by k, add it to temp
+            } else if (arr[j] % k == 0) {
+                temp[l++] = arr[j++];
+            // If neither element is divisible by k, add the smaller one to temp
+            } else if (arr[i] < arr[j]) {
+                temp[l++] = arr[i++];
+            // Otherwise, add the right element to temp
+            } else {
+                temp[l++] = arr[j++];
+            }
+        }
+
+        // Copy remaining elements from the left subarray, if any
+        while (i <= mid) {
+            temp[l++] = arr[i++];
+        }
+
+        // Copy remaining elements from the right subarray, if any
+        while (j <= right) {
+            temp[l++] = arr[j++];
+        }
+
+        // Copy the merged elements back into the original array
+        System.arraycopy(temp, 0, arr, left, temp.length);
         return;
 
     }
@@ -156,7 +226,29 @@ public class ProblemSolutions {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT()
 
-        return false;
+        // Start by sorting the asteroid array
+        Arrays.sort(asteroids);
+
+        // Edge case: if there are no asteroids to be destroyed
+        if (asteroids == null) {
+            return false;
+        }
+
+        // Keep track of the running sum of the mass (asteroids & planet)
+        int totalM = mass;
+
+        // Iterate through the asteroids array
+        for (int i = 0; i < asteroids.length; i++) {
+            // If the sum of the previous asteroids plus the mass of the planet is less than the next asteroid, get destroyed
+            if (totalM < asteroids[i]) {
+                return false;
+            // Otherwise add the current asteroid to the sum of the asteroids
+            } else {
+                totalM += asteroids[i];
+            }
+        }
+
+        return true;
 
     }
 
@@ -194,8 +286,37 @@ public class ProblemSolutions {
 
         // YOUR CODE GOES HERE, CONSIDER USING ARRAYS.SORT
 
-        return -1;
+        // Sort the people array
+        Arrays.sort(people);
 
+        // Edge cases
+        if (people == null || limit <= 0) {
+            return 0;
+        }
+
+        // Keep track of the lightest person
+        int lightestI = 0;
+        // Keep track of the heaviest person
+        int heaviestI = people.length - 1;
+
+        // Keep track of the sleds used
+        int sleds = 0;
+
+        while (lightestI <= heaviestI) {
+            // Send out a sled
+            sleds++;
+
+            // If the lighest person can get on a sled with the heaviest person
+            if (people[lightestI] + people[heaviestI] <= limit) {
+                // Increment the lightest pointer, because the lighest person has gotten on a sled
+                lightestI++;
+            }
+
+            // Decrement the heaviest pointer, becasue the heaviest person has been assigned a sled (with or without lightest)
+            heaviestI--;
+        }
+
+        return sleds;
     }
 
 } // End Class ProblemSolutions
